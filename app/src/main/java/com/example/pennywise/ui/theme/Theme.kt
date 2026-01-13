@@ -12,12 +12,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
+//private val DarkColorScheme = darkColorScheme(
+//    primary = Color(0x00FFFFFF),
+//    secondary = Color(0x00FFFFFF),
+//    onPrimary = Color(0x00FFFFFF),
+//    tertiary = Color(0x00FFFFFF),
+//    background = Color(0xFF1E1E1E)
+//)
+
 private val DarkColorScheme = darkColorScheme(
-    primary = Color(0x282828),
-    onPrimary = Color(0xFFFFFF),
-    tertiary = Pink80,
-    background = Color(0x1E1E1E)
+    primary = Color(0xFF282828), // Couleur des éléments primaires
+    onPrimary = Color.White, // Texte éléments primaires,
+    background = Color(0xFF1E1E1E) // Fond
 )
+
 @Composable
 fun PennyWiseTheme(
     darkTheme: Boolean = true,
