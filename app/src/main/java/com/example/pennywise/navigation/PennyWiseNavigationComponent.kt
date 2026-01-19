@@ -55,7 +55,7 @@ fun PennyWiseNavigationComponent() {
 //        },
         bottomBar = {
             Surface(
-                shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
                 color = MaterialTheme.colorScheme.primary,
                 tonalElevation = 12.dp
             ) {
