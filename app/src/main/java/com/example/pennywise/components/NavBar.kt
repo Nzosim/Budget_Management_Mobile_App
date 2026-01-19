@@ -12,12 +12,14 @@ import androidx.compose.material.icons.filled.DataSaverOff
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
 @Composable
@@ -38,7 +40,9 @@ fun NavBar(navController: NavController, route: String?) {
                     text = "Budget",
                     modifier = Modifier
                         .padding(top = 3.dp),
-                    fontWeight = if (route == "budget") androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal
+                    fontWeight = if (route == "budget") androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 16.sp
                 )
             }
         }
@@ -50,10 +54,12 @@ fun NavBar(navController: NavController, route: String?) {
                 Icon(imageVector = Icons.Filled.List, contentDescription = Icons.Filled.List.toString())
 
                 Text(
-                    text = "Categories",
+                    text = "Catégories",
                     modifier = Modifier
                         .padding(top = 3.dp),
-                    fontWeight = if (route == "categories") androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal
+                    fontWeight = if (route == "categories") androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontSize = 16.sp
                 )
             }
         }

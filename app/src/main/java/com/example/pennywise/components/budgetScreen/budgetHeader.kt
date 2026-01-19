@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,13 +44,10 @@ fun BudgetHeader(
         Text(
             "Budget",
             color = Color.White,
-            fontSize = 30.sp,
-            modifier = Modifier
-                .padding(bottom = 10.dp),
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.titleLarge
         )
-        Text(formatEuro(remaining), color = Color.White, fontSize = 24.sp)
-        Text("Restant", color = Color.LightGray, fontSize = 14.sp)
+        Text(formatEuro(remaining), color = Color.White, style = MaterialTheme.typography.bodyLarge)
+        Text("Restant", color = Color.LightGray, style = MaterialTheme.typography.labelMedium)
 
         MonthSelector(date, onPrevious, onNext)
 
