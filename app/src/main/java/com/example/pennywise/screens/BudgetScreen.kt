@@ -20,14 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.pennywise.components.NavBar
-import com.example.pennywise.components.budgetScreen.budgetHeader
+import com.example.pennywise.components.budgetScreen.BudgetHeader
 import com.example.pennywise.ui.theme.PennyWiseTheme
 import java.text.NumberFormat
+import java.util.Date
 import java.util.Locale
+import java.time.LocalDate
 
 @Composable
 fun BudgetScreen(navController: NavController) {
     val remaining: Double = 12500.0;
+    val month: LocalDate = LocalDate.now()
 
-    budgetHeader(remaining);
+    BudgetHeader(remaining, month);
 }
