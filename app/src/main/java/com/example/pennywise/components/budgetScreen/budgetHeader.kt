@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +29,11 @@ import com.example.pennywise.utils.formatDate
 import java.time.LocalDate
 
 @Composable
-fun BudgetHeader(remaining: Double, date: LocalDate) {
+fun BudgetHeader(
+    remaining: Double,
+    date: LocalDate,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,12 +51,18 @@ fun BudgetHeader(remaining: Double, date: LocalDate) {
         Text(formatEuro(remaining), color = Color.White, fontSize = 24.sp)
         Text("Restant", color = Color.LightGray, fontSize = 14.sp)
 
-        MonthSelector(date)
+        MonthSelector(date, onPrevious, onNext)
+
+        Tabs()
     }
 }
 
 @Composable
-fun MonthSelector(date: LocalDate) {
+fun MonthSelector(
+    date: LocalDate,
+    onPrevious: () -> Unit,
+    onNext: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -59,10 +70,30 @@ fun MonthSelector(date: LocalDate) {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(Icons.Default.ArrowBack, null, tint = Color.White)
+        IconButton(onClick = onPrevious) {
+            Icon(Icons.Default.ArrowBack, contentDescription = "Previous month", tint = Color.White)
+        }
         Spacer(Modifier.width(16.dp))
         Text(formatDate(date), color = Color.White, fontSize = 18.sp)
         Spacer(Modifier.width(16.dp))
-        Icon(Icons.Default.ArrowForward, null, tint = Color.White)
+        IconButton(onClick = onNext) {
+            Icon(Icons.Default.ArrowForward, contentDescription = "Next month", tint = Color.White)
+        }
+    }
+}
+
+@Composable
+fun Tabs() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 20.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.Center
+    ) {
+        Text("DÉPENSES", color = Color.White, fontSize = 28.sp)
+        Spacer(Modifier.width(16.dp))
+        Text("|", color = Color.Gray, fontSize = 28.sp)
+        Spacer(Modifier.width(16.dp))
+        Text("REVENUS", color = Color.Gray, fontSize = 28.sp)
     }
 }
