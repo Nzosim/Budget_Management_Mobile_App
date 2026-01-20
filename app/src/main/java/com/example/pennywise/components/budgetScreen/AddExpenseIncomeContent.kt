@@ -11,7 +11,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DisplayMode
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -28,6 +31,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pennywise.model.Category
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
@@ -35,7 +39,11 @@ import java.time.LocalDate
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("UNUSED_PARAMETER", "NewApi")
 @Composable
-fun AddExpenseIncomeContent(onClose: () -> Unit, date: LocalDate) {
+fun AddExpenseIncomeContent(
+    onClose: () -> Unit,
+    date: LocalDate,
+    categories: List<Category>
+) {
     val context = LocalContext.current
     var nom by remember { mutableStateOf("") }
     var montantText by remember { mutableStateOf("") }
@@ -81,6 +89,16 @@ fun AddExpenseIncomeContent(onClose: () -> Unit, date: LocalDate) {
             }
         )
 
+        var onCategorySelected: Category by remember {
+            mutableStateOf(Category(-1, "Sans catégorie", 0.0, Color.Gray))
+        }
+        CategorySelector(
+            categories = categories,
+            onCategorySelected = { category -> onCategorySelected = category }
+        )
+
+        Log.d("t232est", onCategorySelected.id.toString())
+
         Button(
             onClick = {
                 val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
@@ -95,12 +113,13 @@ fun AddExpenseIncomeContent(onClose: () -> Unit, date: LocalDate) {
                 nouvelleDepense.put("montant", montantValue)
                 nouvelleDepense.put("date", date.toString())
                 nouvelleDepense.put("type", "depense")
+                nouvelleDepense.put("categoryId", onCategorySelected.id)
 
                 val jsonArray = JSONArray(jsonString)
                 jsonArray.put(nouvelleDepense)
 
-                if(montantValue <= 0.0) {
-                    Toast.makeText(context, "Vous ne pouvez pas ajouter un montant vide", Toast.LENGTH_SHORT).show()
+                if(montantValue <= 0.0 || onCategorySelected.id == -1) {
+                    Toast.makeText(context, "Vous ne pouvez pas ajouter un montant ou une catégorie vide", Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(context, "Dépense ajoutée", Toast.LENGTH_SHORT).show()
                     prefs.edit()
@@ -126,6 +145,57 @@ fun AddExpenseIncomeContent(onClose: () -> Unit, date: LocalDate) {
                 fontSize = 16.sp,
                 style = MaterialTheme.typography.bodyLarge
             )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CategorySelector(
+    categories: List<Category>,
+    onCategorySelected: (Category) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    var selectedCategory by remember { mutableStateOf<Category?>(null) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded }
+    ) {
+
+        OutlinedTextField(
+            value = selectedCategory?.label ?: "",
+            onValueChange = {},
+            readOnly = true,
+            shape = RoundedCornerShape(12.dp),
+            label = { Text("Catégorie") },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
+            },
+            modifier = Modifier
+                .menuAnchor() // Menu déroulant
+                .padding(top = 10.dp)
+                .fillMaxWidth()
+        )
+
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            categories.forEach { category ->
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = category.label
+                        )
+                    },
+                    onClick = {
+                        selectedCategory = category
+                        expanded = false
+                        onCategorySelected(category)
+                    }
+                )
+            }
         }
     }
 }
