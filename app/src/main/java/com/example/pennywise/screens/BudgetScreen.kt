@@ -2,6 +2,8 @@ package com.example.pennywise.screens
 
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -15,6 +17,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -91,62 +94,66 @@ fun BudgetScreen(navController: NavController) {
         expenseList.add(Expense(label, montant, date, type, categoryId, categoryColor))
     }
 
-    LazyColumn() {
-        item {
-            BudgetHeader(
-                remaining, month,
-                onPrevious = {
-                    month = month.minusMonths(1)
-                },
-                onNext = {
-                    if (month.isBefore(LocalDate.now())) {
-                        month = month.plusMonths(1)
+    Box(modifier = Modifier.fillMaxSize()) { // Box pour superposition
+        LazyColumn() {
+            item {
+                BudgetHeader(
+                    remaining, month,
+                    onPrevious = {
+                        month = month.minusMonths(1)
+                    },
+                    onNext = {
+                        if (month.isBefore(LocalDate.now())) {
+                            month = month.plusMonths(1)
+                        }
+                    }
+                )
+            }
+
+            item {
+                var spend: Double = 0.0
+                for (expense in expenseList) {
+                    if (expense.type == "depense" && expense.categoryId != -1) {
+                        spend += expense.amount
                     }
                 }
-            )
-        }
-        item {
-            var spend: Double = 0.0
-            for (expense in expenseList) {
-                if (expense.type == "depense" && expense.categoryId != -1) {
-                    spend += expense.amount
+                BudgetBody(month, spend, expenseList)
+            }
+
+            item {
+                if (showBottomSheet) {
+                    ModalBottomSheet(
+                        onDismissRequest = { showBottomSheet = false },
+                        sheetState = sheetState,
+                        scrimColor = Color.Black.copy(alpha = 0.6f),
+                        containerColor = MaterialTheme.colorScheme.background,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        AddExpenseIncomeContent(
+                            onClose = { showBottomSheet = false; refreshTrigger++ },
+                            month,
+                            categories
+                        )
+                    }
                 }
             }
-            BudgetBody(month, spend, expenseList)
-        }
-        item {
-            PlusButton(onClick = { showBottomSheet = true })
-        }
 
-        item {
-            if (showBottomSheet) {
-                ModalBottomSheet(
-                    onDismissRequest = { showBottomSheet = false },
-                    sheetState = sheetState,
-                    scrimColor = Color.Black.copy(alpha = 0.6f),
-                    containerColor = MaterialTheme.colorScheme.background,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    AddExpenseIncomeContent(
-                        onClose = { showBottomSheet = false; refreshTrigger++ },
-                        month,
-                        categories
-                    )
-                }
+            // Récupération et affichage des colonnes
+            items(categories) { category ->
+                CategoryExpense(
+                    onClick = { /* TODO */ },
+                    id = category.id,
+                    label = category.label,
+                    amount = category.amount,
+                    icon = null,
+                    color = category.color,
+                    expenseList
+                )
             }
         }
-
-        // Récupération et affichage des colonnes
-        items(categories) { category ->
-            CategoryExpense(
-                onClick = { /* TODO */ },
-                id = category.id,
-                label = category.label,
-                amount = category.amount,
-                icon = null,
-                color = category.color,
-                expenseList
-            )
-        }
+        PlusButton(
+            onClick = { showBottomSheet = true },
+            modifier = Modifier.align(Alignment.BottomEnd)
+        )
     }
 }
