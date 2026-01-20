@@ -2,6 +2,7 @@ package com.example.pennywise.components.budgetScreen
 
 import android.content.Context.MODE_PRIVATE
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -9,10 +10,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DisplayMode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,11 +30,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import org.json.JSONArray
 import org.json.JSONObject
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Suppress("UNUSED_PARAMETER", "NewApi")
 @Composable
-fun AddExpenseIncomeContent(onClose: () -> Unit) {
+fun AddExpenseIncomeContent(onClose: () -> Unit, date: LocalDate) {
     val context = LocalContext.current
     var nom by remember { mutableStateOf("") }
     var montantText by remember { mutableStateOf("") }
@@ -58,6 +62,10 @@ fun AddExpenseIncomeContent(onClose: () -> Unit) {
             shape = RoundedCornerShape(12.dp)
         )
 
+        val datePickerState = rememberDatePickerState(
+            initialDisplayMode = DisplayMode.Input // Force le mode texte
+        )
+
         OutlinedTextField(
             value = montantText,
             onValueChange = { montantText = it },
@@ -77,22 +85,28 @@ fun AddExpenseIncomeContent(onClose: () -> Unit) {
             onClick = {
                 val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
 
-                val jsonString = prefs.getString("transactions_2026_01", "[]") ?: "[]"
+                var currentMonth = date.toString().split("-")
+                val jsonString = prefs.getString("transactions_" + currentMonth[0] + "_" + currentMonth[1], "[]") ?: "[]"
                 Log.d("test", jsonString.toString())
 
                 val nouvelleDepense = JSONObject()
                 nouvelleDepense.put("label", nom.ifBlank { "Sans nom" })
                 val montantValue = montantText.replace(',', '.').toDoubleOrNull() ?: 0.0
                 nouvelleDepense.put("montant", montantValue)
-                nouvelleDepense.put("date", "2026-01-18")
+                nouvelleDepense.put("date", date.toString())
                 nouvelleDepense.put("type", "depense")
 
                 val jsonArray = JSONArray(jsonString)
                 jsonArray.put(nouvelleDepense)
 
-                prefs.edit()
-                    .putString("transactions_2026_01", jsonArray.toString())
-                    .apply()
+                if(montantValue <= 0.0) {
+                    Toast.makeText(context, "Vous ne pouvez pas ajouter un montant vide", Toast.LENGTH_SHORT).show()
+                }else {
+                    Toast.makeText(context, "Dépense ajoutée", Toast.LENGTH_SHORT).show()
+                    prefs.edit()
+                        .putString("transactions_" + currentMonth[0] + "_" + currentMonth[1], jsonArray.toString())
+                        .apply()
+                }
 
                 nom = ""
                 montantText = ""
