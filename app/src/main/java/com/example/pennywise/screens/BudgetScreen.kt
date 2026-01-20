@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +25,7 @@ import com.example.pennywise.components.budgetScreen.BudgetBody
 import com.example.pennywise.components.budgetScreen.BudgetHeader
 import com.example.pennywise.components.budgetScreen.CategoryExpense
 import com.example.pennywise.model.Category
+import com.example.pennywise.model.Expense
 import org.json.JSONArray
 import java.time.LocalDate
 
@@ -62,6 +62,8 @@ fun BudgetScreen(navController: NavController) {
         }
         list
     }
+
+    var expenseList = remember { mutableStateListOf<Expense>() }
 
     LazyColumn() {
         item {
@@ -102,25 +104,8 @@ fun BudgetScreen(navController: NavController) {
             }
         }
 
-        // Récupération et affichage des colonnes
-        items(categories) { category ->
-            CategoryExpense(
-                onClick = { /* TODO */ },
-                label = category.label,
-                amount = category.amount,
-                icon = null,
-                color = category.color
-            )
-        }
-
         // Récupération des dépenses
         item {
-             val context = LocalContext.current
-             val prefs = context.getSharedPreferences(
-                 "budget_storage",
-                 Context.MODE_PRIVATE
-             )
-
             var currentMonth = month.toString().split("-")
             val jsonString = prefs.getString("transactions_" + currentMonth[0] + "_" + currentMonth[1], "[]")
             val jsonArray = JSONArray(jsonString)
@@ -129,7 +114,7 @@ fun BudgetScreen(navController: NavController) {
                 val item = jsonArray.getJSONObject(i)
 
                 val label = if (item.has("label")) item.getString("label") else item.optString("nom", "Sans nom")
-                val montant = if (item.has("montant")) item.optDouble("montant", 0.0) else item.optInt("montant", 0)
+                val montant = if (item.has("montant")) item.getDouble("montant") else item.optDouble("amount", 0.0)
                 val date = item.optString("date", "?")
                 val type = item.optString("type", "?")
                 val categoryId = item.optInt("categoryId", -1)
@@ -137,8 +122,22 @@ fun BudgetScreen(navController: NavController) {
                 var monthAndYear = date.toString().split("-")
                 if(monthAndYear[0] != currentMonth[0] || monthAndYear[1] != currentMonth[1]) continue
                 Log.d("ledjo", "$date - $label : $montant € ($type)\n")
-                Text("$date - $label : $montant € ($type) $categoryId\n")
+//                Text("$date - $label : $montant € ($type) $categoryId\n")
+                expenseList.add(Expense(label, montant, date, type, categoryId))
             }
+        }
+
+        // Récupération et affichage des colonnes
+        items(categories) { category ->
+            CategoryExpense(
+                onClick = { /* TODO */ },
+                id = category.id,
+                label = category.label,
+                amount = category.amount,
+                icon = null,
+                color = category.color,
+                expenseList
+            )
         }
     }
 }

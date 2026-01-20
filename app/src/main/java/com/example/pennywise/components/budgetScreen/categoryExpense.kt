@@ -22,15 +22,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pennywise.model.Expense
 import com.example.pennywise.utils.formatEuro
 
 @Composable
 fun CategoryExpense(
     onClick: () -> Unit,
+    id: Int,
     label: String,
     amount: Double,
     icon: Int?,
-    color: Color = Color(0xFFDC4D00)
+    color: Color = Color(0xFFDC4D00),
+    expenseList : List<Expense>,
 ) {
     Card(
         modifier = Modifier
@@ -61,9 +64,18 @@ fun CategoryExpense(
                 )
             }
 
-            CategoryProgressBar(0f)
+            var totalExpenses = 0.0
+            for (expense in expenseList) {
+                if (expense.categoryId == id) totalExpenses += expense.amount
+            }
+            val consumedRatio = if (amount > 0) (totalExpenses / amount).toFloat().coerceIn(0f, 1f) else 0f
+            val remainingPercent = ((1f - consumedRatio) * 100).toInt()
 
-            Text((100 - 0f / 100f).toInt().toString() + "% restant",
+            CategoryProgressBar(
+                progress = consumedRatio
+            )
+
+            Text(remainingPercent.toString() + "% restant",
                 modifier = Modifier
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .align(Alignment.End),
