@@ -65,18 +65,21 @@ fun BudgetScreen(navController: NavController) {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 AddExpenseIncomeContent(
-                    onClose = { showBottomSheet = false }
+                    onClose = { showBottomSheet = false },
+                    month
                 )
             }
         }
 
+        // Récupération des datas
         val context = LocalContext.current
         val prefs = context.getSharedPreferences(
             "budget_storage",
             Context.MODE_PRIVATE
         )
 
-        val jsonString = prefs.getString("transactions_2026_01", "[]")
+        var currentMonth = month.toString().split("-")
+        val jsonString = prefs.getString("transactions_" + currentMonth[0] + "_" + currentMonth[1], "[]")
         val jsonArray = JSONArray(jsonString)
 
         for (i in 0 until jsonArray.length()) {
@@ -87,6 +90,8 @@ fun BudgetScreen(navController: NavController) {
             val date = item.optString("date", "?")
             val type = item.optString("type", "?")
 
+            var monthAndYear = date.toString().split("-")
+            if(monthAndYear[0] != currentMonth[0] || monthAndYear[1] != currentMonth[1]) continue
             Log.d("ledjo", "$date - $label : $montant € ($type)\n")
             Text("$date - $label : $montant € ($type)\n")
         }
