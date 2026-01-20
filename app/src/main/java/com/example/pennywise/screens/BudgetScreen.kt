@@ -1,8 +1,11 @@
 package com.example.pennywise.screens
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
@@ -37,7 +40,7 @@ fun BudgetScreen(navController: NavController) {
     val spend by remember { mutableStateOf(2500.0) }
     var month by remember { mutableStateOf(LocalDate.now()) }
 
-    Column {
+    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
         BudgetHeader(remaining, month,
             onPrevious = {
                 month = month.minusMonths(1)
@@ -76,8 +79,6 @@ fun BudgetScreen(navController: NavController) {
         val jsonString = prefs.getString("transactions_2026_01", "[]")
         val jsonArray = JSONArray(jsonString)
 
-        var text = ""
-
         for (i in 0 until jsonArray.length()) {
             val item = jsonArray.getJSONObject(i)
 
@@ -86,9 +87,8 @@ fun BudgetScreen(navController: NavController) {
             val date = item.optString("date", "?")
             val type = item.optString("type", "?")
 
-            text += "$date - $label : $montant € ($type)\n"
+            Log.d("ledjo", "$date - $label : $montant € ($type)\n")
+            Text("$date - $label : $montant € ($type)\n")
         }
-
-        Text(text = text)
     }
 }

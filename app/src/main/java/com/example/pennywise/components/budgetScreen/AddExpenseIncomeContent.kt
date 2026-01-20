@@ -1,6 +1,7 @@
 package com.example.pennywise.components.budgetScreen
 
 import android.content.Context.MODE_PRIVATE
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -77,6 +78,7 @@ fun AddExpenseIncomeContent(onClose: () -> Unit) {
                 val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
 
                 val jsonString = prefs.getString("transactions_2026_01", "[]") ?: "[]"
+                Log.d("test", jsonString.toString())
 
                 val nouvelleDepense = JSONObject()
                 nouvelleDepense.put("label", nom.ifBlank { "Sans nom" })
