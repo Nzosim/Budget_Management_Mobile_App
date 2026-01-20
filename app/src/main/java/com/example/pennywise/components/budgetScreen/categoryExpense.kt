@@ -29,7 +29,7 @@ fun CategoryExpense(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp) // Espacement entre les cartes
+            .padding(vertical = 8.dp, horizontal = 16.dp) // Espacement entre les cartes
             .clickable { onClick() },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = color)
