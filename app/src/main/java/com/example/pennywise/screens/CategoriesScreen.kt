@@ -34,6 +34,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.ui.platform.LocalContext
+import android.content.Context
+import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.platform.LocalContext
+import org.json.JSONArray
+import org.json.JSONObject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -44,10 +52,30 @@ fun CategoriesScreen(navController: NavController) {
     )
 
     // Exemple de données
-    val categories = listOf(
-        Triple("Alimentation", 250.0, Color(0xFFDC4D00)),
-        Triple("Crédits", 800.0, Color(0xFF7200EF))
-    )
+//    val categories = listOf(
+//        Triple("Alimentation", 250.0, Color(0xFFDC4D00)),
+//        Triple("Crédits", 800.0, Color(0xFF7200EF)),
+//        Triple("Loisirs", 150.0, Color(0xFF00BFA5)),
+//        )
+
+    val context = LocalContext.current
+    val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
+
+    val categories = remember {
+        val list = mutableStateListOf<Triple<String, Double, Color>>()
+        val jsonString = prefs.getString("categories5", "[]") ?: "[]"
+        val jsonArray = JSONArray(jsonString)
+        for (i in 0 until jsonArray.length()) {
+            val item = jsonArray.getJSONObject(i)
+            val label = item.optString("categoryLabel", "Sans nom")
+            val amount = item.optDouble("amount", 0.0)
+            val colorLong = item.optLong("color", Color.Gray.value.toLong())
+            val color = Color(colorLong.toULong())
+            list.add(Triple(label, amount, color))
+        }
+        list
+    }
+
 
     Column(
         modifier = Modifier
@@ -94,8 +122,23 @@ fun CategoriesScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             AddCategoryContent(
-                onClose = { showBottomSheet = false }
+                onClose = {
+                    showBottomSheet = false
+
+                    categories.clear()
+                    val jsonString = prefs.getString("categories5", "[]") ?: "[]"
+                    val jsonArray = JSONArray(jsonString)
+                    for (i in 0 until jsonArray.length()) {
+                        val item = jsonArray.getJSONObject(i)
+                        val label = item.optString("categoryLabel", "Sans nom")
+                        val amount = item.optDouble("amount", 0.0)
+                        val colorLong = item.optLong("color", Color.Gray.value.toLong())
+                        val color = Color(colorLong.toULong())
+                        categories.add(Triple(label, amount, color))                    }
+                }
             )
         }
     }
+
+
 }

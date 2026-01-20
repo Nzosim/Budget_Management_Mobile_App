@@ -1,5 +1,7 @@
 package com.example.pennywise.components
 
+import android.content.Context.MODE_PRIVATE
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -23,15 +26,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pennywise.utils.ColorHuePicker
+import org.json.JSONArray
+import org.json.JSONObject
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Suppress("UNUSED_PARAMETER", "NewApi")
 @Composable
 fun AddCategoryContent(onClose: () -> Unit) {
     var selectedColor by remember { mutableStateOf(Color(0xFF282828)) }
+    val context = LocalContext.current
+    var categoryLabel by remember { mutableStateOf("") }
+    var categoryAmount by remember { mutableStateOf("") }
+    var categoryId by remember { mutableStateOf(0) }
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -45,16 +57,16 @@ fun AddCategoryContent(onClose: () -> Unit) {
                 .padding(bottom = 24.dp)
         )
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = categoryLabel,
+            onValueChange = { categoryLabel = it},
             label = { Text("Nom", style = MaterialTheme.typography.labelMedium) },
             modifier = Modifier
                 .fillMaxWidth(),
             shape = RoundedCornerShape(12.dp)
         )
         OutlinedTextField(
-            value = "",
-            onValueChange = {},
+            value = categoryAmount,
+            onValueChange = { categoryAmount = it},
             label = { Text("Montant", style = MaterialTheme.typography.labelMedium) },
             modifier = Modifier
                 .fillMaxWidth(),
@@ -71,7 +83,33 @@ fun AddCategoryContent(onClose: () -> Unit) {
             selectedColor = color
         }
         Button(
-            onClick = onClose,
+            onClick = {
+                val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
+
+                val jsonString = prefs.getString("categories5", "[]") ?: "[]"
+                Log.d("test", jsonString.toString())
+
+                val jsonArray1 = JSONArray(jsonString)
+                val categoryId = jsonArray1.length()
+
+                val newCategory = JSONObject()
+                newCategory.put("id", categoryId)
+                newCategory.put("categoryLabel", categoryLabel.ifBlank { "Sans nom" })
+                val amountValue = categoryAmount.replace(',', '.').toDoubleOrNull() ?: 0.0
+                newCategory.put("amount", amountValue)
+                newCategory.put("color", selectedColor.value.toLong())
+                val jsonArray = JSONArray(jsonString)
+                jsonArray.put(newCategory)
+
+                prefs.edit()
+                    .putString("categories5", jsonArray.toString())
+                    .apply()
+
+                categoryLabel = ""
+                categoryAmount = ""
+
+                onClose()
+            },
             modifier = Modifier
                 .padding(top = 24.dp)
                 .size(width = 200.dp, height = 50.dp),
