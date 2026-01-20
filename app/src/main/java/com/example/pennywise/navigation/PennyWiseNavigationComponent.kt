@@ -19,14 +19,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.pennywise.components.NavBar
 //import androidx.compose.material.icons.Icons
 //import androidx.compose.material.icons.filled.ArrowBack
 import com.example.pennywise.screens.BudgetScreen
+import com.example.pennywise.screens.CategoriesDetailsScreen
 import com.example.pennywise.screens.CategoriesScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,6 +82,13 @@ fun PennyWiseNavigationComponent() {
                 }
                 composable(ROUTE_CATEGORIES) {
                     CategoriesScreen(navController = navController)
+                }
+                composable(
+                    route = "details/{categoryId}",
+                    arguments = listOf(navArgument("categoryId") { type = NavType.IntType })
+                ) { backStackEntry ->
+                    val categoryId = backStackEntry.arguments?.getInt("categoryId")
+                    CategoriesDetailsScreen(navController, categoryId)
                 }
             }
         }

@@ -37,6 +37,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.ui.platform.LocalContext
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.LocalContext
@@ -47,16 +49,7 @@ import org.json.JSONObject
 @Composable
 fun CategoriesScreen(navController: NavController) {
     var showBottomSheet by remember { mutableStateOf(false) }
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
-
-    // Exemple de données
-//    val categories = listOf(
-//        Triple("Alimentation", 250.0, Color(0xFFDC4D00)),
-//        Triple("Crédits", 800.0, Color(0xFF7200EF)),
-//        Triple("Loisirs", 150.0, Color(0xFF00BFA5)),
-//        )
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
@@ -76,41 +69,46 @@ fun CategoriesScreen(navController: NavController) {
         list
     }
 
-
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Text(
-            text = "Catégories",
-            fontWeight = FontWeight.Bold,
-            color = Color.White,
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        LazyColumn(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+    Box(modifier = Modifier.fillMaxSize()) { // Box pour superposition
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            items(categories) { category ->
-                CategoryCard(
-                    onClick = { /* TODO */ },
-                    label = category.first,
-                    amount = category.second,
-                    icon = null,
-                    color = category.third
-                )
+
+            Text(
+                text = "Catégories",
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                style = MaterialTheme.typography.titleLarge
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                itemsIndexed(categories) { index, category ->
+                    CategoryCard(
+                        onClick = {
+                            navController.navigate("details/$index")
+                                  },
+                        label = category.first,
+                        amount = category.second,
+                        icon = null,
+                        color = category.third
+                    )
+                }
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        PlusButton(onClick = { showBottomSheet = true })
+        // Bouton Plus toujours au premier plan
+        PlusButton(
+            onClick = { showBottomSheet = true },
+            modifier = Modifier.align(Alignment.BottomEnd)
+        )
     }
 
     if (showBottomSheet) {
@@ -134,11 +132,10 @@ fun CategoriesScreen(navController: NavController) {
                         val amount = item.optDouble("amount", 0.0)
                         val colorLong = item.optLong("color", Color.Gray.value.toLong())
                         val color = Color(colorLong.toULong())
-                        categories.add(Triple(label, amount, color))                    }
+                        categories.add(Triple(label, amount, color))
+                    }
                 }
             )
         }
     }
-
-
 }
