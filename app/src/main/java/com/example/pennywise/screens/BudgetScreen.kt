@@ -64,6 +64,32 @@ fun BudgetScreen(navController: NavController) {
     }
 
     var expenseList = remember { mutableStateListOf<Expense>() }
+    expenseList.clear()
+    // Récupération des dépenses
+    var currentMonth = month.toString().split("-")
+    val jsonString = prefs.getString("transactions2_" + currentMonth[0] + "_" + currentMonth[1], "[]")
+    val jsonArray = JSONArray(jsonString)
+
+    for (i in 0 until jsonArray.length()) {
+        val item = jsonArray.getJSONObject(i)
+
+        val label = if (item.has("label")) item.getString("label") else item.optString("nom", "Sans nom")
+        val montant = if (item.has("montant")) item.getDouble("montant") else item.optDouble("amount", 0.0)
+        val date = item.optString("date", "?")
+        val type = item.optString("type", "?")
+        val categoryId = item.optInt("categoryId", -1)
+        val categoryColor =
+            if (item.has("categoryColor")) {
+                val colorLong = item.getLong("categoryColor")
+                Color(colorLong.toULong())
+            } else {
+                Color.Gray
+            }
+        var monthAndYear = date.toString().split("-")
+        if(monthAndYear[0] != currentMonth[0] || monthAndYear[1] != currentMonth[1]) continue
+        Log.d("ledjo", "$date - $label : $montant € ($type)\n")
+        expenseList.add(Expense(label, montant, date, type, categoryId, categoryColor))
+    }
 
     LazyColumn() {
         item {
@@ -80,7 +106,13 @@ fun BudgetScreen(navController: NavController) {
             )
         }
         item {
-            BudgetBody(month, spend)
+            var spend: Double = 0.0
+            for (expense in expenseList) {
+                if (expense.type == "depense" && expense.categoryId != -1) {
+                    spend += expense.amount
+                }
+            }
+            BudgetBody(month, spend, expenseList)
         }
         item {
             PlusButton(onClick = { showBottomSheet = true })
@@ -101,29 +133,6 @@ fun BudgetScreen(navController: NavController) {
                         categories
                     )
                 }
-            }
-        }
-
-        // Récupération des dépenses
-        item {
-            var currentMonth = month.toString().split("-")
-            val jsonString = prefs.getString("transactions_" + currentMonth[0] + "_" + currentMonth[1], "[]")
-            val jsonArray = JSONArray(jsonString)
-
-            for (i in 0 until jsonArray.length()) {
-                val item = jsonArray.getJSONObject(i)
-
-                val label = if (item.has("label")) item.getString("label") else item.optString("nom", "Sans nom")
-                val montant = if (item.has("montant")) item.getDouble("montant") else item.optDouble("amount", 0.0)
-                val date = item.optString("date", "?")
-                val type = item.optString("type", "?")
-                val categoryId = item.optInt("categoryId", -1)
-
-                var monthAndYear = date.toString().split("-")
-                if(monthAndYear[0] != currentMonth[0] || monthAndYear[1] != currentMonth[1]) continue
-                Log.d("ledjo", "$date - $label : $montant € ($type)\n")
-//                Text("$date - $label : $montant € ($type) $categoryId\n")
-                expenseList.add(Expense(label, montant, date, type, categoryId))
             }
         }
 

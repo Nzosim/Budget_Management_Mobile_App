@@ -104,7 +104,7 @@ fun AddExpenseIncomeContent(
                 val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
 
                 var currentMonth = date.toString().split("-")
-                val jsonString = prefs.getString("transactions_" + currentMonth[0] + "_" + currentMonth[1], "[]") ?: "[]"
+                val jsonString = prefs.getString("transactions2_" + currentMonth[0] + "_" + currentMonth[1], "[]") ?: "[]"
                 Log.d("test", jsonString.toString())
 
                 val nouvelleDepense = JSONObject()
@@ -114,6 +114,7 @@ fun AddExpenseIncomeContent(
                 nouvelleDepense.put("date", date.toString())
                 nouvelleDepense.put("type", "depense")
                 nouvelleDepense.put("categoryId", onCategorySelected.id)
+                nouvelleDepense.put("categoryColor", onCategorySelected.color.value.toLong())
 
                 val jsonArray = JSONArray(jsonString)
                 jsonArray.put(nouvelleDepense)
@@ -123,7 +124,7 @@ fun AddExpenseIncomeContent(
                 }else {
                     Toast.makeText(context, "Dépense ajoutée", Toast.LENGTH_SHORT).show()
                     prefs.edit()
-                        .putString("transactions_" + currentMonth[0] + "_" + currentMonth[1], jsonArray.toString())
+                        .putString("transactions2_" + currentMonth[0] + "_" + currentMonth[1], jsonArray.toString())
                         .apply()
                 }
 

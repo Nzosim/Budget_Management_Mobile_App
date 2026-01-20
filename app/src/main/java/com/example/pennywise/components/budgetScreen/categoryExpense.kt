@@ -44,6 +44,13 @@ fun CategoryExpense(
         colors = CardDefaults.cardColors(containerColor = color)
     ) {
         Column {
+            var totalExpenses = 0.0
+            for (expense in expenseList) {
+                if (expense.categoryId == id) totalExpenses += expense.amount
+            }
+            val consumedRatio = if (amount > 0) (totalExpenses / amount).toFloat().coerceIn(0f, 1f) else 0f
+            val remainingPercent = ((1f - consumedRatio) * 100).toInt()
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -59,17 +66,10 @@ fun CategoryExpense(
 
                 // Prix
                 Text(
-                    text = formatEuro(amount),
+                    text = formatEuro(totalExpenses),
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
-
-            var totalExpenses = 0.0
-            for (expense in expenseList) {
-                if (expense.categoryId == id) totalExpenses += expense.amount
-            }
-            val consumedRatio = if (amount > 0) (totalExpenses / amount).toFloat().coerceIn(0f, 1f) else 0f
-            val remainingPercent = ((1f - consumedRatio) * 100).toInt()
 
             CategoryProgressBar(
                 progress = consumedRatio

@@ -1,5 +1,6 @@
 package com.example.pennywise.components.budgetScreen
 
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,18 +19,29 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.pennywise.model.Expense
 import com.example.pennywise.utils.formatEuro
 import java.time.LocalDate
 
 data class Categories(val value: Double, val color: Color)
 
 @Composable
-fun BudgetBody(date: LocalDate, spend: Double) {
-    val segments = listOf(
-        Categories(60.0, Color.Blue),
-        Categories(30.0, Color.Red),
-        Categories(10.0, Color.Green),
-    )
+fun BudgetBody(date: LocalDate, spend: Double, expenseList: List<Expense>) {
+//    val segments = listOf(
+//        Categories(60.0, Color.Blue),
+//        Categories(30.0, Color.Red),
+//        Categories(10.0, Color.Green),
+//    )
+
+    val segments = expenseList
+        .filter { it.categoryId != -1 }
+        .map {
+            Categories(
+                value = it.amount,
+                color = it.categoryColor
+            )
+        }
+    Log.d("esfes", segments.toString())
 
     Card(
         modifier = Modifier
