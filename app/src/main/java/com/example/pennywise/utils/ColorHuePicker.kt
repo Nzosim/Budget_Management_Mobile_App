@@ -28,7 +28,7 @@ fun ColorHuePicker(
     )
 
     Column(modifier = Modifier.padding(16.dp)) {
-        Text("Choisir une teinte", style = MaterialTheme.typography.bodyLarge)
+//        Text("Couleur ", style = MaterialTheme.typography.labelMedium)
         Spacer(modifier = Modifier.height(8.dp))
 
         Box(
