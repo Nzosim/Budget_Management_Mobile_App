@@ -30,6 +30,10 @@ import com.example.pennywise.components.AddCategoryContent
 import com.example.pennywise.components.CategoryCard
 import com.example.pennywise.components.NavBar
 import com.example.pennywise.components.PlusButton
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,39 +42,49 @@ fun CategoriesScreen(navController: NavController) {
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
+
+    // Exemple de données
+    val categories = listOf(
+        Triple("Alimentation", 250.0, Color(0xFFDC4D00)),
+        Triple("Crédits", 800.0, Color(0xFF7200EF))
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Top),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Row() {
-            Text(
-                text = "Catégories",
-                fontWeight = FontWeight.Bold,
-                color = Color.White,
-                style = MaterialTheme.typography.titleLarge
-            )
+    ) {
+
+        Text(
+            text = "Catégories",
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            items(categories) { category ->
+                CategoryCard(
+                    onClick = { /* TODO */ },
+                    label = category.first,
+                    amount = category.second,
+                    icon = null,
+                    color = category.third
+                )
+            }
         }
-        Column() {
-            CategoryCard(
-                onClick = { /* TODO */ },
-                label = "Alimentation",
-                amount = 250.0,
-                icon = null,
-                color = Color(0xFFDC4D00)
-            )
-            CategoryCard(
-                onClick = { /* TODO */ },
-                label = "Crédits",
-                amount = 800.0,
-                icon = null,
-                color = Color(0xFF7200EF)
-            )
-            PlusButton(onClick = { showBottomSheet = true })
-        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        PlusButton(onClick = { showBottomSheet = true })
     }
+
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
@@ -80,9 +94,8 @@ fun CategoriesScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         ) {
             AddCategoryContent(
-                onClose = { showBottomSheet = false },
+                onClose = { showBottomSheet = false }
             )
         }
     }
 }
-
