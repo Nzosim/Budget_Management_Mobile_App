@@ -8,25 +8,20 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.pennywise.utils.formatEuro
-import java.util.Date
 import com.example.pennywise.utils.formatDate
+import com.example.pennywise.utils.formatEuro
 import java.time.LocalDate
 
 @Composable
@@ -34,7 +29,8 @@ fun BudgetHeader(
     remaining: Double,
     date: LocalDate,
     onPrevious: () -> Unit,
-    onNext: () -> Unit) {
+    onNext: () -> Unit,
+    displayed: String) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -51,7 +47,7 @@ fun BudgetHeader(
 
         MonthSelector(date, onPrevious, onNext)
 
-        Tabs()
+        Tabs(displayed)
     }
 }
 
@@ -81,17 +77,25 @@ fun MonthSelector(
 }
 
 @Composable
-fun Tabs() {
+fun Tabs(displayed: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 20.dp, bottom = 10.dp),
         horizontalArrangement = Arrangement.Center
     ) {
-        Text("DÉPENSES", color = Color.White, fontSize = 28.sp)
+        Text(
+            "DÉPENSES",
+            color = if(displayed == "EXPENSE") Color.White else Color.Gray,
+            fontSize = 28.sp
+        )
         Spacer(Modifier.width(16.dp))
         Text("|", color = Color.Gray, fontSize = 28.sp)
         Spacer(Modifier.width(16.dp))
-        Text("REVENUS", color = Color.Gray, fontSize = 28.sp)
+        Text(
+            "REVENUS",
+            color = if(displayed == "INCOME") Color.White else Color.Gray,
+            fontSize = 28.sp
+        )
     }
 }

@@ -42,6 +42,7 @@ fun BudgetScreen(navController: NavController) {
     )
 
     val remaining by remember { mutableStateOf(12500.0) }
+    val displayed by remember { mutableStateOf("EXPENSE") }
     val spend by remember { mutableStateOf(2500.0) }
     var month by remember { mutableStateOf(LocalDate.now()) }
 
@@ -106,7 +107,8 @@ fun BudgetScreen(navController: NavController) {
                         if (month.isBefore(LocalDate.now())) {
                             month = month.plusMonths(1)
                         }
-                    }
+                    },
+                    displayed
                 )
             }
 
@@ -117,7 +119,7 @@ fun BudgetScreen(navController: NavController) {
                         spend += expense.amount
                     }
                 }
-                BudgetBody(month, spend, expenseList)
+                if(displayed == "EXPENSE") BudgetBody(month, spend, expenseList)
             }
 
             item {
