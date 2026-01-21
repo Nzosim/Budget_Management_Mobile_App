@@ -39,8 +39,8 @@ fun CategoryCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp), // C'est ce padding qui donne la "taille" et l'épaisseur à la box
-            horizontalArrangement = Arrangement.SpaceBetween, // Pousse les éléments aux bords
+                .padding(24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Nom
