@@ -42,7 +42,8 @@ import java.time.LocalDate
 fun AddExpenseIncomeContent(
     onClose: () -> Unit,
     date: LocalDate,
-    categories: List<Category>
+    categories: List<Category>,
+    displayed: String
 ) {
     val context = LocalContext.current
     var nom by remember { mutableStateOf("") }
@@ -55,7 +56,7 @@ fun AddExpenseIncomeContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Ajouter une dépense",
+            text = "Ajouter " + if(displayed == "EXPENSE") "une dépense" else "un revenu",
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             modifier = Modifier

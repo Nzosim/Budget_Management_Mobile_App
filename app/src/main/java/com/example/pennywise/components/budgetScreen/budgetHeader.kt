@@ -1,5 +1,6 @@
 package com.example.pennywise.components.budgetScreen
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,7 +31,8 @@ fun BudgetHeader(
     date: LocalDate,
     onPrevious: () -> Unit,
     onNext: () -> Unit,
-    displayed: String) {
+    displayed: String,
+    onClick: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -47,7 +49,7 @@ fun BudgetHeader(
 
         MonthSelector(date, onPrevious, onNext)
 
-        Tabs(displayed)
+        Tabs(displayed, onClick)
     }
 }
 
@@ -77,7 +79,10 @@ fun MonthSelector(
 }
 
 @Composable
-fun Tabs(displayed: String) {
+fun Tabs(
+    displayed: String,
+    onClick: (String) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -87,7 +92,10 @@ fun Tabs(displayed: String) {
         Text(
             "DÉPENSES",
             color = if(displayed == "EXPENSE") Color.White else Color.Gray,
-            fontSize = 28.sp
+            fontSize = 28.sp,
+            modifier = Modifier.clickable {
+                onClick("EXPENSE")
+            }
         )
         Spacer(Modifier.width(16.dp))
         Text("|", color = Color.Gray, fontSize = 28.sp)
@@ -95,7 +103,10 @@ fun Tabs(displayed: String) {
         Text(
             "REVENUS",
             color = if(displayed == "INCOME") Color.White else Color.Gray,
-            fontSize = 28.sp
+            fontSize = 28.sp,
+            modifier = Modifier.clickable {
+                onClick("INCOME")
+            }
         )
     }
 }
