@@ -41,15 +41,22 @@ fun BudgetScreen(navController: NavController) {
         skipPartiallyExpanded = true
     )
 
-    val remaining by remember { mutableStateOf(12500.0) }
-    val displayed by remember { mutableStateOf("EXPENSE") }
-    val spend by remember { mutableStateOf(2500.0) }
+    var remaining by remember { mutableStateOf(12500.0) }
+    var displayed by remember { mutableStateOf("EXPENSE") }
     var month by remember { mutableStateOf(LocalDate.now()) }
 
     var refreshTrigger by remember { mutableStateOf(0) }
 
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
+
+    val incomeCategories = listOf<Category>(
+        Category(1000, "Salaire", 0.0, Color(0xFF4CAF50)),
+        Category(1001, "Investissements", 0.0, Color(0xFF2196F3)),
+        Category(1004, "Aides", 0.0, Color(0xFF9C27B0)),
+        Category(1003, "Cadeaux", 0.0, Color(0xFFFF5722)),
+        Category(1002, "Autres revenus", 0.0, Color(0xFFFFC107))
+    )
 
     val categories = remember {
         val list = mutableStateListOf<Category>()
@@ -108,7 +115,10 @@ fun BudgetScreen(navController: NavController) {
                             month = month.plusMonths(1)
                         }
                     },
-                    displayed
+                    displayed,
+                    onClick = { value ->
+                        displayed = value
+                    }
                 )
             }
 
@@ -134,7 +144,8 @@ fun BudgetScreen(navController: NavController) {
                         AddExpenseIncomeContent(
                             onClose = { showBottomSheet = false; refreshTrigger++ },
                             month,
-                            categories
+                            if(displayed == "EXPENSE") categories else incomeCategories,
+                            displayed
                         )
                     }
                 }
@@ -142,7 +153,7 @@ fun BudgetScreen(navController: NavController) {
 
             // Récupération et affichage des colonnes
             items(categories) { category ->
-                CategoryExpense(
+                if(displayed == "EXPENSE") CategoryExpense(
                     onClick = { /* TODO */ },
                     id = category.id,
                     label = category.label,
