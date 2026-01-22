@@ -55,16 +55,11 @@ fun CategoriesScreen(navController: NavController) {
     val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
 
     val categories = remember {
-        val list = mutableStateListOf<Triple<String, Double, Color>>()
-        val jsonString = prefs.getString("categories5", "[]") ?: "[]"
+        val list = mutableStateListOf<JSONObject>()
+        val jsonString = prefs.getString("categories6", "[]") ?: "[]"
         val jsonArray = JSONArray(jsonString)
         for (i in 0 until jsonArray.length()) {
-            val item = jsonArray.getJSONObject(i)
-            val label = item.optString("categoryLabel", "Sans nom")
-            val amount = item.optDouble("amount", 0.0)
-            val colorLong = item.optLong("color", Color.Gray.value.toLong())
-            val color = Color(colorLong.toULong())
-            list.add(Triple(label, amount, color))
+            list.add(jsonArray.getJSONObject(i))
         }
         list
     }
@@ -90,15 +85,17 @@ fun CategoriesScreen(navController: NavController) {
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                itemsIndexed(categories) { index, category ->
+                items(categories) { category ->
+                    val categoryId = category.optInt("id", 0)
+
                     CategoryCard(
                         onClick = {
-                            navController.navigate("details/$index")
-                                  },
-                        label = category.first,
-                        amount = category.second,
+                            navController.navigate("details/$categoryId")
+                        },
+                        label = category.optString("categoryLabel", "Sans nom"),
+                        amount = category.optDouble("amount", 0.0),
                         icon = null,
-                        color = category.third
+                        color = Color(category.optLong("color", Color.Gray.value.toLong()).toULong())
                     )
                 }
             }
@@ -122,17 +119,11 @@ fun CategoriesScreen(navController: NavController) {
             AddCategoryContent(
                 onClose = {
                     showBottomSheet = false
-
                     categories.clear()
-                    val jsonString = prefs.getString("categories5", "[]") ?: "[]"
+                    val jsonString = prefs.getString("categories6", "[]") ?: "[]"
                     val jsonArray = JSONArray(jsonString)
                     for (i in 0 until jsonArray.length()) {
-                        val item = jsonArray.getJSONObject(i)
-                        val label = item.optString("categoryLabel", "Sans nom")
-                        val amount = item.optDouble("amount", 0.0)
-                        val colorLong = item.optLong("color", Color.Gray.value.toLong())
-                        val color = Color(colorLong.toULong())
-                        categories.add(Triple(label, amount, color))
+                        categories.add(jsonArray.getJSONObject(i))
                     }
                 }
             )

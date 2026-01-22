@@ -16,9 +16,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.pennywise.utils.formatEuro
+
 
 @Composable
 fun CategoryCard(
@@ -31,36 +36,63 @@ fun CategoryCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp) // Espacement entre les cartes
-            .clickable { onClick() },
+            .padding(vertical = 8.dp)
+            .clickable { onClick() }
+            .drawWithContent {
+                drawContent()
+                // Ombre interne supérieure
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Black.copy(alpha = 0.2f),
+                            Color.Transparent
+                        ),
+                        endY = 40f
+                    ),
+                    blendMode = BlendMode.Multiply
+                )
+
+                // Reflet interne inférieur
+                drawRect(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            Color.Transparent,
+                            Color.White.copy(alpha = 0.1f)
+                        ),
+                        startY = size.height - 20f,
+                        endY = size.height
+                    ),
+                    blendMode = BlendMode.Overlay
+                )
+            },
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = color)
+        colors = CardDefaults.cardColors(containerColor = color),
+        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp), // C'est ce padding qui donne la "taille" et l'épaisseur à la box
-            horizontalArrangement = Arrangement.SpaceBetween, // Pousse les éléments aux bords
+                .padding(24.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Nom
             Text(
                 text = label,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.White
             )
 
-            // Prix
-            Column(
-                horizontalAlignment = Alignment.End
-            ) {
+            Column(horizontalAlignment = Alignment.End) {
                 Text(
                     text = formatEuro(amount),
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = Color.White
                 )
                 Text(
                     text = "/ mois",
-                    style = MaterialTheme.typography.labelMedium
-                    )
+                    style = MaterialTheme.typography.labelMedium,
+                    color = Color.White.copy(alpha = 0.7f)
+                )
             }
         }
     }
