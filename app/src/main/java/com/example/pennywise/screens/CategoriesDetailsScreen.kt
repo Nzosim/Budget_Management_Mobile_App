@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -28,6 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
@@ -36,6 +40,7 @@ import androidx.navigation.NavController
 import com.example.pennywise.components.AddCategoryContent
 import com.example.pennywise.components.CategoryCard
 import com.example.pennywise.components.EditCategoryContent
+import com.example.pennywise.components.ExpenseCard
 import org.json.JSONArray
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +48,7 @@ import org.json.JSONArray
 fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
-    val jsonString = prefs.getString("categories6", "[]") ?: "[]"
+    val jsonString = prefs.getString("categories5", "[]") ?: "[]"
     val jsonArray = JSONArray(jsonString)
     var item: org.json.JSONObject? = null
     for (i in 0 until jsonArray.length()) {
@@ -53,12 +58,11 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
             break
         }
     }
-// Si l'objet est introuvable (après suppression), on ferme l'écran proprement
     if (item == null) {
         androidx.compose.runtime.LaunchedEffect(Unit) {
             navController.popBackStack()
         }
-        return // Arrête l'affichage pour éviter le crash
+        return
     }
     val label = item.optString("categoryLabel", "Sans nom")
     val amount = item.optDouble("amount", 0.0)
@@ -68,8 +72,8 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            .fillMaxSize(),
+//            .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CenterAlignedTopAppBar(
@@ -77,7 +81,7 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
                 Text(
                     text = label,
                     style = MaterialTheme.typography.titleLarge,
-                    color = color
+                    color = Color.White
                 )
             },
             navigationIcon = {
@@ -106,12 +110,39 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
                 containerColor = MaterialTheme.colorScheme.background
             )
         )
-        CategoryCard(onClick = {},
-            label = label,
-            amount = amount,
-            color = color,
-            icon = null,
-        )
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            CategoryCard(
+                onClick = {},
+                label = label,
+                amount = amount,
+                color = color,
+                icon = null,
+            )
+            HorizontalDivider(
+                thickness = 2.dp,
+                modifier = Modifier.padding(8.dp)
+            )
+            ExpenseCard(
+                label = "KFC",
+                amount = 11.9,
+                date = "2026-01-20",
+                type = "depense",
+                categoryId = categoryId ?: 0,
+                categoryColor = color,
+                onClick = {}
+            )
+            ExpenseCard(
+                label = "McDo",
+                amount = 10.0,
+                date = "2026-01-21",
+                type = "depense",
+                categoryId = categoryId ?: 0,
+                categoryColor = color,
+                onClick = {}
+            )
+        }
 
 
         if (showBottomSheet) {
@@ -124,7 +155,8 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
             ) {
                 EditCategoryContent (
                     categoryId = categoryId ?: 0,
-                    onClose = {showBottomSheet = false}
+                    onClose = {showBottomSheet = false},
+                    color = color ?: Color.Gray,
                 )
             }
         }

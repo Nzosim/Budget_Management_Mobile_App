@@ -86,7 +86,7 @@ fun AddCategoryContent(onClose: () -> Unit) {
             onClick = {
                 val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
 
-                val jsonString = prefs.getString("categories6", "[]") ?: "[]"
+                val jsonString = prefs.getString("categories5", "[]") ?: "[]"
                 Log.d("test", jsonString.toString())
 
                 val jsonArray1 = JSONArray(jsonString)
@@ -102,7 +102,7 @@ fun AddCategoryContent(onClose: () -> Unit) {
                 jsonArray.put(newCategory)
 
                 prefs.edit()
-                    .putString("categories6", jsonArray.toString())
+                    .putString("categories5", jsonArray.toString())
                     .apply()
 
                 categoryLabel = ""

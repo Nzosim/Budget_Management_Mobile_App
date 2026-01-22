@@ -17,6 +17,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,7 +31,21 @@ fun NavBar(navController: NavController, route: String?) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .drawWithContent {
+                drawContent()
+                drawRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF4B4B4B).copy(alpha = 0.25f),
+                            Color.Transparent
+                        ),
+                        radius = size.width * 0.35f
+                    ),
+                    blendMode = BlendMode.Screen
+                )
+            }
             .padding(top = 10.dp, bottom = 10.dp),
+
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {
         Button(onClick = { navController.navigate("budget") }) {

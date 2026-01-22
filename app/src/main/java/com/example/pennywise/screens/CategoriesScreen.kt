@@ -56,7 +56,7 @@ fun CategoriesScreen(navController: NavController) {
 
     val categories = remember {
         val list = mutableStateListOf<JSONObject>()
-        val jsonString = prefs.getString("categories6", "[]") ?: "[]"
+        val jsonString = prefs.getString("categories5", "[]") ?: "[]"
         val jsonArray = JSONArray(jsonString)
         for (i in 0 until jsonArray.length()) {
             list.add(jsonArray.getJSONObject(i))
@@ -101,7 +101,6 @@ fun CategoriesScreen(navController: NavController) {
             }
         }
 
-        // Bouton Plus toujours au premier plan
         PlusButton(
             onClick = { showBottomSheet = true },
             modifier = Modifier.align(Alignment.BottomEnd)
@@ -120,7 +119,7 @@ fun CategoriesScreen(navController: NavController) {
                 onClose = {
                     showBottomSheet = false
                     categories.clear()
-                    val jsonString = prefs.getString("categories6", "[]") ?: "[]"
+                    val jsonString = prefs.getString("categories5", "[]") ?: "[]"
                     val jsonArray = JSONArray(jsonString)
                     for (i in 0 until jsonArray.length()) {
                         categories.add(jsonArray.getJSONObject(i))

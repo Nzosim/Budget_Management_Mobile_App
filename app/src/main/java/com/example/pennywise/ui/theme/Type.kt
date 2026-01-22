@@ -44,7 +44,7 @@ val CustomFontFamily = FontFamily(
 )
 
 val Typography = Typography(
-    // Pour les titres (ex: "Catégories")
+    // titres
     titleLarge = TextStyle(
         fontFamily = CustomFontFamily,
         fontWeight = FontWeight.Bold,
@@ -57,7 +57,7 @@ val Typography = Typography(
             blurRadius = 8f
         )
     ),
-    // Pour le nom des catégories (ex: "Alimentation")
+    // nom des catégories
     bodyLarge = TextStyle(
         fontFamily = CustomFontFamily,
         fontWeight = FontWeight.SemiBold,
@@ -70,11 +70,23 @@ val Typography = Typography(
             blurRadius = 8f
         )
     ),
-    // Pour les petits textes (ex: "/ mois")
+    // textes moyens
     labelMedium = TextStyle(
         fontFamily = CustomFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 18.sp,
+        lineHeight = 16.sp,
+        letterSpacing = 0.5.sp,
+        shadow = Shadow(
+            color = Color.Black.copy(alpha = 0.5f),
+            offset = Offset(4f, 4f),
+            blurRadius = 8f)
+    ),
+    // petits textes
+    labelSmall = TextStyle(
+        fontFamily = CustomFontFamily,
+        fontWeight = FontWeight.ExtraLight,
+        fontSize = 14.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp,
         shadow = Shadow(

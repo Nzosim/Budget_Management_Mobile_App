@@ -27,7 +27,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
@@ -40,12 +39,14 @@ import com.example.pennywise.utils.ColorHuePicker
 import org.json.JSONArray
 import org.json.JSONObject
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditCategoryContent(
     categoryId: Int,
-    onClose: () -> Unit
+    onClose: () -> Unit,
+    color: Color
 ) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("budget_storage", MODE_PRIVATE) }
@@ -56,7 +57,7 @@ fun EditCategoryContent(
 
     // Chargement des données existantes
     LaunchedEffect(categoryId) {
-        val jsonString = prefs.getString("categories6", "[]") ?: "[]"
+        val jsonString = prefs.getString("categories5", "[]") ?: "[]"
         val jsonArray = JSONArray(jsonString)
 
         for (i in 0 until jsonArray.length()) {
@@ -96,15 +97,19 @@ fun EditCategoryContent(
             label = { Text("Montant") },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
-            trailingIcon = { Text("€ / mois") }
+            trailingIcon = {
+                Text(
+                    "€ / mois",
+                    modifier = Modifier.padding(end=8.dp),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
         )
-
-        ColorHuePicker { selectedColor = it }
 
         // Bouton modifier
         Button(
             onClick = {
-                val jsonString = prefs.getString("categories6", "[]") ?: "[]"
+                val jsonString = prefs.getString("categories5", "[]") ?: "[]"
                 val jsonArray = JSONArray(jsonString)
 
                 for (i in 0 until jsonArray.length()) {
@@ -112,15 +117,15 @@ fun EditCategoryContent(
                     if (obj.getInt("id") == categoryId) {
                         obj.put("categoryLabel", categoryLabel.ifBlank { "Sans nom" })
                         obj.put("amount", categoryAmount.replace(',', '.').toDoubleOrNull() ?: 0.0)
-                        obj.put("color", selectedColor.value.toLong())
+                        obj.put("color", color.value.toLong())
                     }
                 }
 
-                prefs.edit().putString("categories6", jsonArray.toString()).apply()
+                prefs.edit().putString("categories5", jsonArray.toString()).apply()
                 onClose()
             },
             modifier = Modifier.padding(top = 24.dp).size(200.dp, 50.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = selectedColor)
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
             Text("Enregistrer")
         }
@@ -129,7 +134,7 @@ fun EditCategoryContent(
         IconButton(
             onClick = {
                 try {
-                    val jsonString = prefs.getString("categories6", "[]") ?: "[]"
+                    val jsonString = prefs.getString("categories5", "[]") ?: "[]"
                     val oldArray = JSONArray(jsonString)
                     val newArray = JSONArray()
 
@@ -141,7 +146,7 @@ fun EditCategoryContent(
                         }
                     }
 
-                    prefs.edit().putString("categories6", newArray.toString()).apply()
+                    prefs.edit().putString("categories5", newArray.toString()).apply()
 
                     onClose()
                 } catch (e: Exception) {
