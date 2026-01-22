@@ -42,7 +42,6 @@ fun BudgetScreen(navController: NavController) {
         skipPartiallyExpanded = true
     )
 
-    var remaining by remember { mutableStateOf(0.0) }
     var displayed by remember { mutableStateOf("EXPENSE") }
     var month by remember { mutableStateOf(LocalDate.now()) }
 
@@ -77,8 +76,15 @@ fun BudgetScreen(navController: NavController) {
 
     var expenseList = remember { mutableStateListOf<Expense>() }
     var incomeList = remember { mutableStateListOf<Expense>() }
+    var totalIncome by remember { mutableStateOf(0.0) }
+
+    totalIncome = 0.0
+    for (income in incomeList) {
+        totalIncome += income.amount
+    }
 
     expenseList.clear()
+    incomeList.clear()
     // Récupération des dépenses
     var currentMonth = month.toString().split("-")
     val jsonString = prefs.getString("transactions2_" + currentMonth[0] + "_" + currentMonth[1], "[]")
@@ -114,7 +120,8 @@ fun BudgetScreen(navController: NavController) {
         LazyColumn() {
             item {
                 BudgetHeader(
-                    remaining, month,
+                    totalIncome,
+                    month,
                     onPrevious = {
                         month = month.minusMonths(1)
                     },
@@ -140,7 +147,7 @@ fun BudgetScreen(navController: NavController) {
                 if(displayed == "EXPENSE") {
                     BudgetBody(month, spend, expenseList)
                 }else {
-                    IncomeBody(month, remaining, incomeList)
+                    IncomeBody(month, totalIncome, incomeList)
                 }
             }
 

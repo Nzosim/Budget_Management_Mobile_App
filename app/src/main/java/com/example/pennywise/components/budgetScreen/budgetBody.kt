@@ -27,12 +27,6 @@ data class Categories(val value: Double, val color: Color)
 
 @Composable
 fun BudgetBody(date: LocalDate, spend: Double, expenseList: List<Expense>) {
-//    val segments = listOf(
-//        Categories(60.0, Color.Blue),
-//        Categories(30.0, Color.Red),
-//        Categories(10.0, Color.Green),
-//    )
-
     val segments = expenseList
         .filter { it.categoryId != -1 }
         .map {
