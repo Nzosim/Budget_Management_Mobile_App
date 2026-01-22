@@ -27,6 +27,7 @@ import com.example.pennywise.components.budgetScreen.AddExpenseIncomeContent
 import com.example.pennywise.components.budgetScreen.BudgetBody
 import com.example.pennywise.components.budgetScreen.BudgetHeader
 import com.example.pennywise.components.budgetScreen.CategoryExpense
+import com.example.pennywise.components.budgetScreen.IncomeBody
 import com.example.pennywise.model.Category
 import com.example.pennywise.model.Expense
 import org.json.JSONArray
@@ -41,7 +42,7 @@ fun BudgetScreen(navController: NavController) {
         skipPartiallyExpanded = true
     )
 
-    var remaining by remember { mutableStateOf(12500.0) }
+    var remaining by remember { mutableStateOf(0.0) }
     var displayed by remember { mutableStateOf("EXPENSE") }
     var month by remember { mutableStateOf(LocalDate.now()) }
 
@@ -75,6 +76,8 @@ fun BudgetScreen(navController: NavController) {
     }
 
     var expenseList = remember { mutableStateListOf<Expense>() }
+    var incomeList = remember { mutableStateListOf<Expense>() }
+
     expenseList.clear()
     // Récupération des dépenses
     var currentMonth = month.toString().split("-")
@@ -99,7 +102,12 @@ fun BudgetScreen(navController: NavController) {
         var monthAndYear = date.toString().split("-")
         if(monthAndYear[0] != currentMonth[0] || monthAndYear[1] != currentMonth[1]) continue
         Log.d("ledjo", "$date - $label : $montant € ($type)\n")
-        expenseList.add(Expense(label, montant, date, type, categoryId, categoryColor))
+        if(type == "revenu") {
+            incomeList.add(Expense(label, montant, date, type, categoryId, categoryColor))
+            continue
+        }else if(type == "depense") {
+            expenseList.add(Expense(label, montant, date, type, categoryId, categoryColor))
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize()) { // Box pour superposition
@@ -129,7 +137,11 @@ fun BudgetScreen(navController: NavController) {
                         spend += expense.amount
                     }
                 }
-                if(displayed == "EXPENSE") BudgetBody(month, spend, expenseList)
+                if(displayed == "EXPENSE") {
+                    BudgetBody(month, spend, expenseList)
+                }else {
+                    IncomeBody(month, remaining, incomeList)
+                }
             }
 
             item {
@@ -152,15 +164,16 @@ fun BudgetScreen(navController: NavController) {
             }
 
             // Récupération et affichage des colonnes
-            items(categories) { category ->
-                if(displayed == "EXPENSE") CategoryExpense(
+            items(if(displayed == "EXPENSE") categories else incomeCategories) { category ->
+                CategoryExpense(
                     onClick = { /* TODO */ },
                     id = category.id,
                     label = category.label,
                     amount = category.amount,
                     icon = null,
                     color = category.color,
-                    expenseList
+                    displayed,
+                    if(displayed == "EXPENSE")  expenseList else incomeList
                 )
             }
         }

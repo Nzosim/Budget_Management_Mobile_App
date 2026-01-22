@@ -113,7 +113,7 @@ fun AddExpenseIncomeContent(
                 val montantValue = montantText.replace(',', '.').toDoubleOrNull() ?: 0.0
                 nouvelleDepense.put("montant", montantValue)
                 nouvelleDepense.put("date", date.toString())
-                nouvelleDepense.put("type", "depense")
+                nouvelleDepense.put("type", if(displayed == "EXPENSE") "depense" else "revenu")
                 nouvelleDepense.put("categoryId", onCategorySelected.id)
                 nouvelleDepense.put("categoryColor", onCategorySelected.color.value.toLong())
 
@@ -123,7 +123,7 @@ fun AddExpenseIncomeContent(
                 if(montantValue <= 0.0 || onCategorySelected.id == -1) {
                     Toast.makeText(context, "Vous ne pouvez pas ajouter un montant ou une catégorie vide", Toast.LENGTH_SHORT).show()
                 }else {
-                    Toast.makeText(context, "Dépense ajoutée", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, if(displayed == "EXPENSE") "Dépense ajoutée" else "Revenu ajouté", Toast.LENGTH_SHORT).show()
                     prefs.edit()
                         .putString("transactions2_" + currentMonth[0] + "_" + currentMonth[1], jsonArray.toString())
                         .apply()

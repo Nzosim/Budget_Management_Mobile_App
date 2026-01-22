@@ -33,6 +33,7 @@ fun CategoryExpense(
     amount: Double,
     icon: Int?,
     color: Color = Color(0xFFDC4D00),
+    displayed: String,
     expenseList : List<Expense>,
 ) {
     Card(
@@ -71,17 +72,19 @@ fun CategoryExpense(
                 )
             }
 
-            CategoryProgressBar(
-                progress = consumedRatio
-            )
+            if(displayed == "EXPENSE") {
+                CategoryProgressBar(
+                    progress = consumedRatio
+                )
 
-            Text(remainingPercent.toString() + "% restant",
-                modifier = Modifier
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .align(Alignment.End),
-                style = MaterialTheme.typography.labelMedium,
-                fontSize = 14.sp,
-            )
+                Text(remainingPercent.toString() + "% restant",
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .align(Alignment.End),
+                    style = MaterialTheme.typography.labelMedium,
+                    fontSize = 14.sp,
+                )
+            }
         }
     }
 }
