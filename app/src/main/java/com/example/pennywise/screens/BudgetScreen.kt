@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -46,19 +47,20 @@ fun BudgetScreen(navController: NavController) {
     var month by remember { mutableStateOf(LocalDate.now()) }
 
     var refreshTrigger by remember { mutableStateOf(0) }
+    LaunchedEffect(Unit) { refreshTrigger++ }
 
     val context = LocalContext.current
     val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
 
-    val incomeCategories = listOf<Category>(
+    val incomeCategories = remember(refreshTrigger) { mutableStateListOf<Category>(
         Category(1000, "Salaire", 0.0, Color(0xFF4CAF50)),
         Category(1001, "Investissements", 0.0, Color(0xFF2196F3)),
         Category(1004, "Aides", 0.0, Color(0xFF9C27B0)),
         Category(1003, "Cadeaux", 0.0, Color(0xFFFF5722)),
         Category(1002, "Autres revenus", 0.0, Color(0xFFFFC107))
-    )
+    )}
 
-    val categories = remember {
+    val categories = remember(refreshTrigger) {
         val list = mutableStateListOf<Category>()
         val jsonString = prefs.getString("categories5", "[]") ?: "[]"
         val jsonArray = JSONArray(jsonString)
