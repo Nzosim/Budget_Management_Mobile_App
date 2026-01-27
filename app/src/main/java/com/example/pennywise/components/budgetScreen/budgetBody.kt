@@ -1,6 +1,5 @@
 package com.example.pennywise.components.budgetScreen
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,14 +27,11 @@ data class Categories(val value: Double, val color: Color)
 @Composable
 fun BudgetBody(date: LocalDate, spend: Double, expenseList: List<Expense>) {
     val segments = expenseList
+        .asSequence()
         .filter { it.categoryId != -1 }
-        .map {
-            Categories(
-                value = it.amount,
-                color = it.categoryColor
-            )
-        }
-    Log.d("esfes", segments.toString())
+        .groupBy { it.categoryColor }
+        .map { (color, list) -> Categories(value = list.sumOf { it.amount }, color = color) }
+        .toList()
 
     Card(
         modifier = Modifier
