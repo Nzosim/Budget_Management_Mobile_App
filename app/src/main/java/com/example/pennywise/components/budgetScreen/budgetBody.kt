@@ -13,6 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -36,7 +39,23 @@ fun BudgetBody(date: LocalDate, spend: Double, expenseList: List<Expense>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
+            .drawWithContent {
+                drawContent()
+
+                drawRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF4B4B4B).copy(alpha = 0.5f),
+                            Color.Transparent
+                        ),
+//                        radius = size.minDimension * 0.8f
+                        radius = size.width * 0.4f
+
+                    ),
+                    blendMode = BlendMode.Screen
+                )
+            },
         shape = RoundedCornerShape(16.dp)
     ) {
         Box(
