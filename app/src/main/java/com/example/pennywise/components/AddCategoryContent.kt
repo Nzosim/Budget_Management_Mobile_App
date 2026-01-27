@@ -2,6 +2,7 @@ package com.example.pennywise.components
 
 import android.content.Context.MODE_PRIVATE
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -100,7 +101,7 @@ fun AddCategoryContent(onClose: () -> Unit) {
 
                 categoryLabel = ""
                 categoryAmount = ""
-
+                Toast.makeText(context, "Catégorie créée !", Toast.LENGTH_SHORT).show()
                 onClose()
             },
             modifier = Modifier

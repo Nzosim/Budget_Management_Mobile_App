@@ -1,5 +1,7 @@
 package com.example.pennywise.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +34,7 @@ import com.example.pennywise.screens.BudgetScreen
 import com.example.pennywise.screens.CategoriesDetailsScreen
 import com.example.pennywise.screens.CategoriesScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PennyWiseNavigationComponent() {
@@ -58,7 +61,7 @@ fun PennyWiseNavigationComponent() {
 //        },
         bottomBar = {
             Surface(
-                shape = RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp),
+                shape = RoundedCornerShape(topStart = 60.dp, topEnd = 60.dp),
                 color = MaterialTheme.colorScheme.primary,
                 tonalElevation = 12.dp
             ) {

@@ -2,6 +2,7 @@ package com.example.pennywise.components
 
 import android.content.Context.MODE_PRIVATE
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -111,7 +112,9 @@ fun EditCategoryContent(
                 }
 
                 prefs.edit().putString("categories5", jsonArray.toString()).apply()
+                Toast.makeText(context, "Catégorie modifiée !", Toast.LENGTH_SHORT).show()
                 onClose()
+
             },
             modifier = Modifier.padding(top = 24.dp).size(200.dp, 50.dp),
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
@@ -136,6 +139,7 @@ fun EditCategoryContent(
                     }
 
                     prefs.edit().putString("categories5", newArray.toString()).apply()
+                    Toast.makeText(context, "Catégorie supprimée !", Toast.LENGTH_SHORT).show()
 
                     onClose()
                 } catch (e: Exception) {

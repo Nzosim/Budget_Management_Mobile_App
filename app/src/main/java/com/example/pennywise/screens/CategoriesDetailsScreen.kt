@@ -99,6 +99,7 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
             } else {
                 Color.Gray
             }
+
         var monthAndYear = expenseDate.toString().split("-")
         if (monthAndYear[0] != currentMonth[0] || monthAndYear[1] != currentMonth[1]) continue
         Log.d("ledjo", "$expenseDate - $label : $expenseMontant € ($expenseType)\n")
@@ -116,7 +117,7 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
                 )
             }
         }
-
+    }
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -188,24 +189,6 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
                     }
 
                 }
-                ExpenseCard(
-                    label = "KFC",
-                    amount = 11.9,
-                    date = "2026-01-20",
-                    type = "depense",
-                    categoryId = categoryId ?: 0,
-                    categoryColor = color,
-                    onClick = {}
-                )
-                ExpenseCard(
-                    label = "McDo",
-                    amount = 10.0,
-                    date = "2026-01-21",
-                    type = "depense",
-                    categoryId = categoryId ?: 0,
-                    categoryColor = color,
-                    onClick = {}
-                )
             }
 
 
@@ -226,5 +209,5 @@ fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
             }
 
         }
-    }
+
 }
