@@ -26,6 +26,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,7 +50,23 @@ fun CategoryExpense(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp, horizontal = 16.dp) // Espacement entre les cartes
-            .clickable { onClick() },
+            .clickable { onClick() }
+            .drawWithContent {
+                drawContent()
+
+                drawRect(
+                    brush = Brush.radialGradient(
+                        colors = listOf(
+                            Color(0xFF4B4B4B).copy(alpha = 0.8f),
+                            Color.Transparent
+                        ),
+//                        radius = size.minDimension * 0.8f
+                        radius = size.width * 0.35f
+
+                    ),
+                    blendMode = BlendMode.Screen
+                )
+            },
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = color)
     ) {
