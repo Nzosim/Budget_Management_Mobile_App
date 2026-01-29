@@ -27,8 +27,6 @@
 
 ## Résultat final
 
-## Résultat final
-
 <p align="center">
   <img src="./assets/Expense.png" width="200" />
   <img src="./assets/Income.png" width="200" />
@@ -38,5 +36,5 @@
 <p align="center">
   <img src="./assets/Category.png" width="200" />
   <img src="./assets/Add_Category.png" width="200" />
-  <img src="./assets/Expense_List.png" width="200" />
+  <img src="./assets/Expense_list.png" width="200" />
 </p>
