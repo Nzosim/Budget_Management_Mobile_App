@@ -127,7 +127,7 @@ fun AddExpenseIncomeContent(
 
         Button(
             onClick = {
-                val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
+                val prefs = context.getSharedPreferences("budget_storage1", MODE_PRIVATE)
 
                 val selectedLocalDate = selectedDateMillis?.let {
                     Instant.ofEpochMilli(it).atZone(ZoneId.systemDefault()).toLocalDate()

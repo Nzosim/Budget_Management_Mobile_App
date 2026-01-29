@@ -50,7 +50,7 @@ fun BudgetScreen(navController: NavController) {
     LaunchedEffect(Unit) { refreshTrigger++ }
 
     val context = LocalContext.current
-    val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
+    val prefs = context.getSharedPreferences("budget_storage1", Context.MODE_PRIVATE)
 
     val incomeCategories = remember(refreshTrigger) { mutableStateListOf<Category>(
         Category(1000, "Salaire", 0.0, Color(0xFF4CAF50)),
@@ -118,11 +118,18 @@ fun BudgetScreen(navController: NavController) {
         }
     }
 
+    var spend: Double = 0.0
+    for (expense in expenseList) {
+        if (expense.type == "depense" && expense.categoryId != -1) {
+            spend += expense.amount
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) { // Box pour superposition
         LazyColumn() {
             item {
                 BudgetHeader(
-                    totalIncome,
+                    (totalIncome - spend),
                     month,
                     onPrevious = {
                         month = month.minusMonths(1)
@@ -140,12 +147,6 @@ fun BudgetScreen(navController: NavController) {
             }
 
             item {
-                var spend: Double = 0.0
-                for (expense in expenseList) {
-                    if (expense.type == "depense" && expense.categoryId != -1) {
-                        spend += expense.amount
-                    }
-                }
                 if(displayed == "EXPENSE") {
                     BudgetBody(month, spend, expenseList)
                 }else {

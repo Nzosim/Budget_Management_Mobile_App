@@ -48,7 +48,7 @@ import java.time.LocalDate
 @Composable
 fun CategoriesDetailsScreen(navController: NavController, categoryId: Int?) {
     val context = LocalContext.current
-    val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
+    val prefs = context.getSharedPreferences("budget_storage1", Context.MODE_PRIVATE)
     val jsonString = prefs.getString("categories5", "[]") ?: "[]"
     val jsonArray = JSONArray(jsonString)
     var item: org.json.JSONObject? = null

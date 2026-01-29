@@ -52,7 +52,7 @@ fun CategoriesScreen(navController: NavController) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val context = LocalContext.current
-    val prefs = context.getSharedPreferences("budget_storage", Context.MODE_PRIVATE)
+    val prefs = context.getSharedPreferences("budget_storage1", Context.MODE_PRIVATE)
 
     val categories = remember {
         val list = mutableStateListOf<JSONObject>()

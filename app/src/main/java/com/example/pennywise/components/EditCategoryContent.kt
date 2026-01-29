@@ -39,7 +39,7 @@ fun EditCategoryContent(
     color: Color
 ) {
     val context = LocalContext.current
-    val prefs = remember { context.getSharedPreferences("budget_storage", MODE_PRIVATE) }
+    val prefs = remember { context.getSharedPreferences("budget_storage1", MODE_PRIVATE) }
 
     var categoryLabel by remember { mutableStateOf("") }
     var categoryAmount by remember { mutableStateOf("") }

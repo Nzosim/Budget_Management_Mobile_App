@@ -78,7 +78,7 @@ fun AddCategoryContent(onClose: () -> Unit) {
         }
         Button(
             onClick = {
-                val prefs = context.getSharedPreferences("budget_storage", MODE_PRIVATE)
+                val prefs = context.getSharedPreferences("budget_storage1", MODE_PRIVATE)
 
                 val jsonString = prefs.getString("categories5", "[]") ?: "[]"
                 Log.d("test", jsonString.toString())
