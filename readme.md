@@ -1,35 +1,42 @@
 # Penny Wise
 
-> Application Kotlin et Jetpack Compose de gestion de budget
+> Application Kotlin avec Jetpack Compose dédiée à la gestion de budget
 
 ## Contexte
 
 ### Objectifs
 
-- Permettre de visualiser et catégoriser ses dépenses
-- Aider à établir et suivre son budget
-- Fournir des conseils et des statistiques
+- Permettre de visualiser et de catégoriser ses dépenses  
+- Aider à établir et à suivre un budget  
+- Fournir des conseils ainsi que des statistiques  
 
 ### Fonctionnalités principales
 
-- Suivi des dépenses : Enregistrement de transactions et catégorisations
-- Création de budgets : Configuration d’un budget global
-- Alertes de budget : Indications visuels lors du dépassement du budget
+- Suivi des dépenses : enregistrement des transactions et catégorisation  
+- Création de budgets : configuration d’un budget global  
+- Alertes de budget : indications visuelles en cas de dépassement du budget  
 
 ### Public cible
 
-- Adultes cherchant un moyen simple et efficace pour suivre leurs finances
-- Personnes désirant améliorer leurs habitudes d’épargne et gestion financière
+- Adultes recherchant un moyen simple et efficace de suivre leurs finances  
+- Personnes souhaitant améliorer leurs habitudes d’épargne et leur gestion financière  
 
 ## Maquette
 
-[https://www.figma.com/design/nS5Mn78xMeGulZmcfafEhn/PennyWise?node-id=0-1&t=2MqqOZ3ymAXFFwHZ-1](Lien vers la maquette Figma)
+[🔗 Voir la maquette sur Figma](https://www.figma.com/design/nS5Mn78xMeGulZmcfafEhn/PennyWise?node-id=0-1&t=2MqqOZ3ymAXFFwHZ-1)
 
 ## Résultat final
 
-<img src="./assets/Expense.png" alt="isolated" width="200"/>
-<img src="./assets/Income.png" alt="isolated" width="200"/>
-<img src="./assets/Add_Expense.png" alt="isolated" width="200"/>
-<img src="./assets/Category.png" alt="isolated" width="200"/>
-<img src="./assets/Add_Category.png" alt="isolated" width="200"/>
-<img src="./assets/Expense_List.png" alt="isolated" width="200"/>
+## Résultat final
+
+<p align="center">
+  <img src="./assets/Expense.png" width="200" />
+  <img src="./assets/Income.png" width="200" />
+  <img src="./assets/Add_Expense.png" width="200" />
+</p>
+
+<p align="center">
+  <img src="./assets/Category.png" width="200" />
+  <img src="./assets/Add_Category.png" width="200" />
+  <img src="./assets/Expense_List.png" width="200" />
+</p>
